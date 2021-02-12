@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <style>
+        .margin-zero {
+            margin: 0px;
+        }
+        .padding-zero {
+            padding: 0px;
+        }
+
+        body .row {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        #question-and-answer-cont {
+            background-size: contain;
+            background-position: center;
+            background-repeat: repeat-x;
+            padding-top: 5%;
+            margin-bottom: -50px;
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+
+        .question-and-answer {
+
+        }
+
+        #question {
+            padding: 60px;
+            color: #ffffff;
+			height: 150px;
+            background-color: #0278ae;
+            border-radius: 8px;
+            transition: 0.5s;
+            white-space: pre-line;
+        }
+
+        #question:hover{
+          transform: translateY(-8px);
+          transition: 0.5s;
+          box-shadow: 12px 12px 32px 0px  #51adcf;
+        }
+
+        #questionBlock {
+            margin-top: 20px;
+            height: 200px;
+            background-color: #a5ecd7;
+            padding-top: 10px;
+        }
+
+        #answerContainer {
+			
+            padding: 3%;
+            color: #000000;
+			height: 100px;
+            background-color: #a5ecd7;
+        }
+
+        #userInput {
+            height: 60px;
+            border-radius: 30px;
+            background-color: aliceblue;
+            padding-left: 25px;
+            padding-right: 25px;
+            text-align: center;
+			margin-top: 10px;
+        }
+
+
+        .timer-div {
+
+        }
+
+        .score-div {
+
+        }
+
+        .small-header {
+            font-size: 12px;
+        }
+
+        #timerTable {
+            width: 100%;
+        }
+
+        #timerTable #time-row td {
+            text-align: center;
+            border: 1px solid rgba(149, 148, 148, 0.57);
+            padding: 10px;
+        }
+
+        #timerTable #time-text-row td {
+            font-size: 12px;
+            text-align: center;
+            border: none;
+            padding: 10px;
+        }
+
+        .timer-div .card-body {
+            padding: 0px;
+        }
+
+        .score-div .card-body {
+            padding: 10px;
+        }
+
+        .timer-div {
+            margin-top: 10px;
+        }
+
+        .score-text {
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        #correctIcon {
+            position: fixed;
+            margin-top: 12px;
+            margin-left: 15px;
+            display: none;
+			height: 50px;
+			float: left;
+			z-index: 1000;
+        }
+
+         #wrongIcon {
+             position: absolute;
+             margin-top: 12px;
+            margin-left: 15px;
+            display: none;
+			height: 50px;
+			float: left;
+			z-index: 1000;
+         }
+
+         #showButton, #nextButton {
+            display: none;
+         }
+
+		.subAnaswerCont {
+			height: 50px;
+			width: 100%;
+		}
+
+        .muteSoundCont {
+            margin-top: 10px;
+        }
+
+        .pt20 {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!--<div class="container">-->
+<!--    <div class="row">-->
+<!--        <div class="col-sm-12 text-center">-->
+<!--            <h4 id="question"></h4>-->
+<!--            <h4 id="answerContainer" class="my-3"><span id="answer"></span></h4>-->
+<!--        </div>-->
+<!--        <div class="col-sm-12 text-center">-->
+<!--            <button class="btn btn-success btn-lg" onclick="showAnswer()" id="showButton">Show Answer</button> &nbsp;-->
+<!--            <button class="btn btn-success btn-lg" onclick="moveToNextQs()" id="nextButton">Next</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="row" id="question-and-answer-cont">
+    <div class="col-sm-10">
+        <div class="col-sm-12  text-center question-and-answer"><h4 id="question"></h4></div>
+
+        <div class="col-sm-12">
+            <h4 id="answerContainer" class="text-center"><span id="answer"></span></h4>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="col-sm-12" id="questionBlock">
+                <img src="./correctAnswer.png" width="30px" height="30px" id="correctIcon">
+                <img src="./wrongAnswer.png" width="30px" height="30px" id="wrongIcon">
+                <div class="col-sm-12 text-center">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" id="userInput">
+                        </div>
+<!--                        <div class="col-sm-3" >-->
+<!--                            <button id="voiceRecognition" class="btn btn-primary" onclick='startSR()'>Start Record</button>-->
+<!--                            <button id="voiceRecognitionstop" class="btn  btn-primary" onclick='recognition.onresult()'>Check</button>-->
+<!--                        </div>-->
+                        <div class="col-sm-3 text-center pt20" id="recordingWarning"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class="col-sm-12 subAnaswerCont text-center"><span id="subAnaswer"></span></div>
+                            <div class="col-sm-12 text-center"><span id="subQuestion"></span></div>
+                        </div>
+<!--                        <div class="col-sm-3 text-center" id="recordingWarning"></div>-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success btn-lg" onclick="showAnswer()" id="showButton">Show Answer</button> &nbsp;
+            <button class="btn btn-success btn-lg" onclick="moveToNextQs()" id="nextButton">Next</button>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="card score-div border-success">
+            <div class="card-header bg-success border-success text-center text-white">
+                <b>SmartScore</b> </br>
+                <span class="small-header">Out of 100 <i class="fa fa-question-circle-o"></i></span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 text-center score-text" id="totalSCore">
+                        00
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card timer-div border-primary">
+            <div class="card-header bg-primary border-primary text-center text-white">
+                <b>Time elapsed</b>
+                <p></p>
+            </div>
+            <div class="card-body">
+                <table id="timerTable">
+                    <tr id="time-row">
+                        <td id="hoursCell">00</td>
+                        <td id="minutesCell">02</td>
+                        <td id="secondsCell">15</td>
+                    </tr>
+                    <tr id="time-text-row">
+                        <td>HR</td>
+                        <td>MIN</td>
+                        <td>SEC</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm-12 muteSoundCont text-center">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="muteSound">
+                <label class="form-check-label" for="muteSound">Mute the sound</label>
+            </div>
+        </div>
+        <div class="col-sm-12 muteSoundCont text-center">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="hideHint">
+                <label class="form-check-label" for="hideHint">Hide the hint &nbsp; &nbsp;&nbsp;</label>
+            </div>
+        </div>
+        <div class="col-sm-12 muteSoundCont text-center">
+            <button class="btn btn-success" onclick="startTheQuiz()">Start the Quiz</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<h1 id="result"></h1>
+<h2 id="check"></h2>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/53790a319a.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="customjs.js"></script>
+</body>
+</html>
